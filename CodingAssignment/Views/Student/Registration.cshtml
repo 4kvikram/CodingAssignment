@@ -1,0 +1,93 @@
+﻿@model CodingAssignment.Models.StudentViewModel
+
+<h2>Create Student</h2>
+
+<form asp-action="Registration" method="post" enctype="multipart/form-data">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="form-group">
+        <label asp-for="Name"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Email"></label>
+        <input asp-for="Email" class="form-control" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Mobile"></label>
+        <input asp-for="Mobile" class="form-control" />
+        <span asp-validation-for="Mobile" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="StateId"></label>
+        <select id="stateDropdown" asp-for="StateId" class="form-control"
+                asp-items="@(new SelectList(Model.States, "Id", "StateName"))">
+            <option value="">-- Select State --</option>
+        </select>
+        <span asp-validation-for="StateId" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="CityId"></label>
+        <select id="cityDropdown" asp-for="CityId" class="form-control">
+            <option value="">-- Select City --</option>
+        </select>
+        <span asp-validation-for="CityId" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="AboutYourself"></label>
+        <textarea asp-for="AboutYourself" class="form-control"></textarea>
+        <span asp-validation-for="AboutYourself" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Photo"></label>
+        <input asp-for="Photo" type="file" class="form-control-file" />
+        <span asp-validation-for="Photo" id="photoError" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+<script>
+    $(document).ready(function () {
+         $('#Photo').change(function() {
+         var file = this.files[0];
+            if (file) {
+                var fileSize = file.size; 
+                var fileType = file.type; 
+                var allowedTypes = ['image/jpeg', 'image/png'];
+                var maxSize = 250 * 1024; // 250 KB
+
+                if (fileSize > maxSize) {
+                    $('#photoError').text('File size should be less than 250 KB.');
+                    $(this).val(''); // Clear input
+                } else if (!allowedTypes.includes(fileType)) {
+                    $('#photoError').text('Only JPG and PNG files are allowed.');
+                    $(this).val(''); // Clear input
+                } else {
+                    $('#photoError').text(''); // Clear error message
+                }
+            }
+    });
+
+
+
+
+
+        $('#stateDropdown').change(function () {
+            var stateId = $(this).val();
+            console.log(stateId);
+            $.ajax({
+                url: `/student/GetCities?id=${stateId}`,
+                type: 'GET',
+                data: { stateId: stateId },
+                success: function (data) {
+                      console.log(data);
+                    $('#cityDropdown').empty();
+                    $('#cityDropdown').append($('<option>').val('').text('-- Select City --'));
+                    $.each(data, function (index, city) {
+                        $('#cityDropdown').append($('<option>').val(city.id).text(city.cityName));
+                    });
+                }
+            });
+        });
+    });
+</script>

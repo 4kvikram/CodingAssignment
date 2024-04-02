@@ -1,0 +1,33 @@
+﻿@model List<CodingAssignment.Models.StudentViewModel>
+
+<h2>Student Details</h2>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Mobile</th>
+            <th>State</th>
+            <th>City</th>
+            <th>About Yourself</th>
+            <th>Photo</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var student in Model)
+        {
+            <tr>
+                <td>@student.Name</td>
+                <td>@student.Email</td>
+                <td>@student.Mobile</td>
+                <td>@student.StateName</td>
+                <td>@student.CityName</td>
+                <td>@student.AboutYourself</td>
+                <td><img src="@Url.Content(@student.PhotoPath)" alt="Student Photo" style="max-width: 100px; max-height: 100px;" /></td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
