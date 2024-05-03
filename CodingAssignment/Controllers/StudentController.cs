@@ -47,8 +47,8 @@ namespace CodingAssignment.Controllers
                         viewModel.PhotoPath = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}{HttpContext.Request.PathBase}/";
 
                         _studentService.SaveStudent(viewModel);
+                        return RedirectToAction(nameof(StudentList));
 
-                        
                     }
                 }
             }

@@ -5,25 +5,25 @@
 <form asp-action="Registration" method="post" enctype="multipart/form-data">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <input asp-for="@Model.Id" class="form-control" hidden />
-    <input asp-for="@Model.CityId" id='hdncityid' class="form-control" hidden />
+    <input value="@Model.CityId" id='hdncityid' class="form-control" hidden />
     <div class="form-group">
         <label asp-for="Name"></label>
-        <input asp-for="Name" class="form-control" />
+        <input asp-for="@Model.Name" class="form-control" />
         <span asp-validation-for="Name" class="text-danger"></span>
     </div>
     <div class="form-group">
         <label asp-for="Email"></label>
-        <input asp-for="Email" class="form-control" />
+        <input asp-for="@Model.Email" class="form-control" />
         <span asp-validation-for="Email" class="text-danger"></span>
     </div>
     <div class="form-group">
         <label asp-for="Mobile"></label>
-        <input asp-for="Mobile" class="form-control" />
+        <input asp-for="@Model.Mobile" class="form-control" />
         <span asp-validation-for="Mobile" class="text-danger"></span>
     </div>
     <div class="form-group">
         <label asp-for="StateId">Select State</label>
-        <select id="stateDropdown" asp-for="StateId" class="form-control"
+        <select id="stateDropdown" asp-for="@Model.StateId" class="form-control"
                 asp-items="@(new SelectList(Model.States, "Id", "StateName",@Model.StateId))">
             <option value="">-- Select State --</option>
         </select>
@@ -31,25 +31,28 @@
     </div>
     <div class="form-group">
         <label asp-for="CityId">Select City</label>
-        <select id="cityDropdown" asp-for="CityId" class="form-control">
+        <select id="cityDropdown" asp-for="@Model.CityId" class="form-control">
             <option value="">-- Select City --</option>
         </select>
         <span asp-validation-for="CityId" class="text-danger"></span>
     </div>
     <div class="form-group">
         <label asp-for="AboutYourself"></label>
-        <textarea asp-for="AboutYourself" class="form-control"></textarea>
+        <textarea asp-for="@Model.AboutYourself" class="form-control"></textarea>
         <span asp-validation-for="AboutYourself" class="text-danger"></span>
     </div>
     <div class="form-group">
         <label asp-for="Photo"></label>
-
+           <br />
         @if (Model.Id > 0)
         {
-            <br />
             <img id="SelectedImageDiv" src="@Url.Content(@Model.PhotoPath)" alt="Student Photo" style="max-width: 100px; max-height: 100px;" />
-            <br />
         }
+        else
+        {
+            <img id="SelectedImageDiv"  alt="Student Photo" style="max-width: 100px; max-height: 100px;" >
+        }
+           <br />
         <input asp-for="Photo" type="file" class="form-control-file" />
         <span asp-validation-for="Photo" id="photoError" class="text-danger"></span>
     </div>

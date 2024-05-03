@@ -21,6 +21,7 @@ namespace CodingAssignment.Models
         public int StateId { get; set; }
 
         [Required(ErrorMessage = "City is required")]
+        [Range(1, int.MaxValue, ErrorMessage = "Please selecte the city")]
         public int CityId { get; set; }
 
         [Required(ErrorMessage = "About Yourself is required")]
