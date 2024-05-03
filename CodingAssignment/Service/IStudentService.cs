@@ -6,7 +6,7 @@ namespace CodingAssignment.Service
     {
         IEnumerable<StateViewModel> GetStates();
         IEnumerable<CityViewModel> GetCities(int stateId);
-        void AddStudent(StudentViewModel studentViewModel);
+        void SaveStudent(StudentViewModel studentViewModel);
         StudentViewModel GetStudent(int id);
         IEnumerable<StudentViewModel> GetAllStudents();
     }

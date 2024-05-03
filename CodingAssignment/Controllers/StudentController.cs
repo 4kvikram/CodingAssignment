@@ -20,9 +20,13 @@ namespace CodingAssignment.Controllers
         }
 
 
-        public IActionResult Registration()
+        public IActionResult Registration(int id = 0)
         {
             StudentViewModel studentViewModel = new StudentViewModel();
+            if (id > 0)
+            {
+                studentViewModel = _studentService.GetStudent(id);
+            }
             studentViewModel.States = _studentService.GetStates().ToList();
             return View(studentViewModel);
         }
@@ -30,18 +34,42 @@ namespace CodingAssignment.Controllers
         [HttpPost]
         public IActionResult Registration(StudentViewModel viewModel)
         {
-            // Check if photo is not null and has content
+
             string[] allowedFileTypes = { "image/jpeg", "image/png" };
-            if (viewModel.Photo != null && viewModel.Photo.Length < 250 * 1024 && allowedFileTypes.Contains(viewModel.Photo.ContentType))
+            if (viewModel.Id == 0)
             {
-                if (ModelState.IsValid)
+                //add new
+                // Check if photo is not null and has content
+                if (viewModel.Photo != null && viewModel.Photo.Length < 250 * 1024 && allowedFileTypes.Contains(viewModel.Photo.ContentType))
                 {
-                    viewModel.PhotoPath = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}{HttpContext.Request.PathBase}/";
+                    if (ModelState.IsValid)
+                    {
+                        viewModel.PhotoPath = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}{HttpContext.Request.PathBase}/";
 
-                    _studentService.AddStudent(viewModel);
+                        _studentService.SaveStudent(viewModel);
 
-                    return RedirectToAction(nameof(StudentList));
+                        
+                    }
                 }
+            }
+            else
+            {
+                if (viewModel.Photo != null)
+                {
+                    if (viewModel.Photo.Length < 250 * 1024 && allowedFileTypes.Contains(viewModel.Photo.ContentType))
+                    {
+                        viewModel.PhotoPath = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}{HttpContext.Request.PathBase}/";
+                    }
+                    else
+                    {
+                        viewModel.States = _studentService.GetStates().ToList();
+                        return View(viewModel);
+                    }
+                }
+
+                _studentService.SaveStudent(viewModel);
+                return RedirectToAction(nameof(StudentList));
+                //update
             }
             viewModel.States = _studentService.GetStates().ToList();
             return View(viewModel);

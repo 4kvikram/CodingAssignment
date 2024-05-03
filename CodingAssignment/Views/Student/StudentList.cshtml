@@ -12,6 +12,7 @@
             <th>City</th>
             <th>About Yourself</th>
             <th>Photo</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -25,6 +26,7 @@
                 <td>@student.CityName</td>
                 <td>@student.AboutYourself</td>
                 <td><img src="@Url.Content(@student.PhotoPath)" alt="Student Photo" style="max-width: 100px; max-height: 100px;" /></td>
+                <td><a asp-action="Registration" asp-controller="Student" asp-route-id="@student.Id" class='btn btn-primary'>Edit</a> </td>
             </tr>
         }
     </tbody>

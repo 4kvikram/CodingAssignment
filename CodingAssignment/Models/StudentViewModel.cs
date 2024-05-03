@@ -34,6 +34,6 @@ namespace CodingAssignment.Models
         public string? StateName { get; set; }
         public string? CityName { get; set; }
 
-        public List<StateViewModel>? States { get; set; }
+        public List<StateViewModel> States { get; set; } = new List<StateViewModel>();
     }
 }

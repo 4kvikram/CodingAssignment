@@ -4,6 +4,8 @@
 
 <form asp-action="Registration" method="post" enctype="multipart/form-data">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input asp-for="@Model.Id" class="form-control" hidden />
+    <input asp-for="@Model.CityId" id='hdncityid' class="form-control" hidden />
     <div class="form-group">
         <label asp-for="Name"></label>
         <input asp-for="Name" class="form-control" />
@@ -20,15 +22,15 @@
         <span asp-validation-for="Mobile" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <label asp-for="StateId"></label>
+        <label asp-for="StateId">Select State</label>
         <select id="stateDropdown" asp-for="StateId" class="form-control"
-                asp-items="@(new SelectList(Model.States, "Id", "StateName"))">
+                asp-items="@(new SelectList(Model.States, "Id", "StateName",@Model.StateId))">
             <option value="">-- Select State --</option>
         </select>
         <span asp-validation-for="StateId" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <label asp-for="CityId"></label>
+        <label asp-for="CityId">Select City</label>
         <select id="cityDropdown" asp-for="CityId" class="form-control">
             <option value="">-- Select City --</option>
         </select>
@@ -41,18 +43,46 @@
     </div>
     <div class="form-group">
         <label asp-for="Photo"></label>
+
+        @if (Model.Id > 0)
+        {
+            <br />
+            <img id="SelectedImageDiv" src="@Url.Content(@Model.PhotoPath)" alt="Student Photo" style="max-width: 100px; max-height: 100px;" />
+            <br />
+        }
         <input asp-for="Photo" type="file" class="form-control-file" />
         <span asp-validation-for="Photo" id="photoError" class="text-danger"></span>
     </div>
-    <button type="submit" class="btn btn-primary">Submit</button>
+    @if (Model.Id > 0)
+    {
+        <button type="submit" class="btn btn-primary">Update</button>
+    }
+    else
+    {
+        <button type="submit" class="btn btn-primary">Submit</button>
+    }
+
 </form>
 <script>
     $(document).ready(function () {
+
+           document.getElementById('Photo').addEventListener('change', function() {
+        var file = this.files[0]; // Get the selected file
+        if (file) {
+            var reader = new FileReader(); // Create a FileReader object
+            reader.onload = function(event) {
+                $('#SelectedImageDiv').attr('src', event.target.result); // Set the src attribute of the image
+                $('#SelectedImageDiv').show(); // Show the image
+            };
+            reader.readAsDataURL(file); // Read the file as a data URL
+        }
+    });
+
          $('#Photo').change(function() {
          var file = this.files[0];
             if (file) {
-                var fileSize = file.size; 
-                var fileType = file.type; 
+                var fileSize = file.size;
+                var fileType = file.type;
                 var allowedTypes = ['image/jpeg', 'image/png'];
                 var maxSize = 250 * 1024; // 250 KB
 
@@ -70,12 +100,20 @@
 
 
 
-
+     BindCity( $("#stateDropdown").val());
 
         $('#stateDropdown').change(function () {
             var stateId = $(this).val();
             console.log(stateId);
-            $.ajax({
+            BindCity(stateId);
+        });
+    });
+
+    function BindCity(stateId)
+    {
+        if(stateId>0)
+        {
+          $.ajax({
                 url: `/student/GetCities?id=${stateId}`,
                 type: 'GET',
                 data: { stateId: stateId },
@@ -84,10 +122,16 @@
                     $('#cityDropdown').empty();
                     $('#cityDropdown').append($('<option>').val('').text('-- Select City --'));
                     $.each(data, function (index, city) {
-                        $('#cityDropdown').append($('<option>').val(city.id).text(city.cityName));
+                        if(city.id==$("#hdncityid").val())
+                        {
+                              $('#cityDropdown').append($('<option>').val(city.id).text(city.cityName).prop('selected', true));
+                        }else
+                        {
+                            $('#cityDropdown').append($('<option>').val(city.id).text(city.cityName));
+                        }
                     });
                 }
             });
-        });
-    });
+        }
+    }
 </script>
